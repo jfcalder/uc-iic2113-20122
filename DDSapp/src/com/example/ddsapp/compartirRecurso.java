@@ -21,10 +21,10 @@ public class compartirRecurso extends Activity {
         
        // ListaRecursosLocales = app.getAllLocalResources();
         
-        for(Iterator<IResource> i = ListaRecursosLocales.iterator(); i.hasNext(); ) {
-        	  IResource resource = i.next();
-      //  	  resource. = true;
-        	}
+//        for(Iterator<IResource> i = ListaRecursosLocales.iterator(); i.hasNext(); ) {
+//        	  IResource resource = i.next();
+//      //  	  resource. = true;
+//        	}
         
         
     }
