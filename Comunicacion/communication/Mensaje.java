@@ -1,3 +1,4 @@
+package communication;
 
 public class Mensaje implements java.io.Serializable{
 

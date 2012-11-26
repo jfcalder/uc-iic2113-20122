@@ -1,7 +1,8 @@
 package communication;
-//import usermanager.*;
+
 
 import java.io.Serializable;
+
 
 public class UMMessage implements Serializable{
 	public int sender_id;
