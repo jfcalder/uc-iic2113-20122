@@ -29,7 +29,7 @@ public class MainActivity extends Activity {
         
         //Botón compartir recurso
         
-        Button but = (Button) findViewById(R.id.button1);
+        Button but = (Button) findViewById(R.id.buttonCompartirRecurso);
         but.setOnClickListener(new View.OnClickListener() {
     		
     		public void onClick(View v) {
@@ -43,7 +43,7 @@ public class MainActivity extends Activity {
         
         //Botón buscar recursos
         
-        Button bib = (Button) findViewById(R.id.button2);
+        Button bib = (Button) findViewById(R.id.buttonBuscarRecurso);
         bib.setOnClickListener(new View.OnClickListener() {
     		
     		public void onClick(View v) {
@@ -54,7 +54,7 @@ public class MainActivity extends Activity {
     		}
     	}); 
         
-        Button bot3 = (Button) findViewById(R.id.button3);
+        Button bot3 = (Button) findViewById(R.id.buttonVerCamera);
         bot3.setOnClickListener(new View.OnClickListener() {
     		
     		public void onClick(View v) {
@@ -80,7 +80,7 @@ public class MainActivity extends Activity {
     		}
     	});
         
-        Button bot5 = (Button) findViewById(R.id.button5);
+        Button bot5 = (Button) findViewById(R.id.buttonNotificar);
         bot5.setOnClickListener(new View.OnClickListener() {
     		
     		public void onClick(View v) {

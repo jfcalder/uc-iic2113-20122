@@ -4,33 +4,13 @@
     android:layout_height="match_parent" >
 
     <Button
-        android:id="@+id/button1"
+        android:id="@+id/buttonCompartirRecurso"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="156dp"
         android:text="Compartir Recurso" />
-
-    <Button
-        android:id="@+id/button2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/button1"
-        android:layout_alignRight="@+id/button1"
-        android:layout_below="@+id/button1"
-        android:layout_marginTop="72dp"
-        android:text="Buscar Recurso" />
-
-    <Button
-        android:id="@+id/button3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/button2"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="38dp"
-        android:text="Ver Camara" />
-    
 
     <ImageView
         android:id="@+id/imageView1"
@@ -50,11 +30,30 @@
         android:text="Ver Foto" />
 
     <Button
-        android:id="@+id/button5"
+        android:id="@+id/buttonNotificar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/button3"
+        android:layout_marginRight="14dp"
         android:text="Notificar" />
+
+    <Button
+        android:id="@+id/buttonVerCamera"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="39dp"
+        android:text="Ver Camara" />
+
+    <Button
+        android:id="@+id/buttonBuscarRecurso"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/buttonVerCamera"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="60dp"
+        android:text="Buscar Recurso" />
 
 </RelativeLayout>
