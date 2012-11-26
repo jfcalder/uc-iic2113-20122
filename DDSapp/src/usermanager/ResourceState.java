@@ -12,8 +12,13 @@ public class ResourceState implements IResource {
     private int pic_counter = 0;
     private int vid_counter = 0;
     private int user_id = 0;
+    private String type;
 
-    public boolean isAvailable() {
+    public void setType(String type) {
+		this.type = type;
+	}
+
+	public boolean isAvailable() {
         return true;
     }
 
@@ -54,6 +59,10 @@ public class ResourceState implements IResource {
     
     public int getUserId(){
     	return this.user_id;
+    }
+    
+    public String getType(){
+    	return type;
     }
 
 }

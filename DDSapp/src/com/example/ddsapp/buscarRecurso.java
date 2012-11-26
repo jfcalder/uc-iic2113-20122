@@ -3,6 +3,8 @@ package com.example.ddsapp;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import usermanager.ResourceState;
+
 import cl.puc.dds.appmgr.external.IResource;
 
 import android.app.Activity;
@@ -20,7 +22,7 @@ import android.widget.ListView;
 public class buscarRecurso extends Activity {
 
 	private MyApplication app;
-	private ArrayList<IResource> ListaRecursos;
+	private ArrayList<ResourceState> ListaRecursos;
 	private String[] ListaTipoRecurso;
 	
 	@Override
@@ -36,19 +38,19 @@ public class buscarRecurso extends Activity {
         
         
         ListaRecursos = app.getAllForeignResources();
-        //ListaTipoRecurso = new String[ListaRecursos.size()];
-        ListaTipoRecurso = new String[2];
+        Log.v("ListaRecursos",""+ListaRecursos);
+        ListaTipoRecurso = new String[ListaRecursos.size()];
+        
         int j = 0;
         
-        ListaTipoRecurso[0]= "Hola";
-        ListaTipoRecurso[1]= "Hola2";
+        for(Iterator<ResourceState> i = ListaRecursos.iterator(); i.hasNext(); ) {
+        	  ResourceState resource = i.next();
+        	  String type = resource.getType();
+        	  ListaTipoRecurso[j] = type;
+        	  j++;
+        	}
         
-       // for(Iterator<IResource> i = ListaRecursos.iterator(); i.hasNext(); ) {
-        //	  IResource resource = i.next();
-        	//  String type = resource.getType();
-        	  //ListaTipoRecurso[j] = type;
-        	  //j++;
-        //	}
+        
         
         ArrayAdapter adapter = new ArrayAdapter<String>(this, 
                 android.R.layout.simple_list_item_1, ListaTipoRecurso);
@@ -72,7 +74,7 @@ public class buscarRecurso extends Activity {
 	 private OnItemClickListener mMessageClickedHandler = new OnItemClickListener() {
 		    public void onItemClick(AdapterView parent, View v, int position, long id) {
 		       Log.v("BuscarRecurso", "Position: "+position+" id: "+id);
-		       IResource resource = ListaRecursos.get(position);
+		       ResourceState resource = ListaRecursos.get(position);
 		       app.userResource(resource);
 		       
 		      /* Object objeto = app.recieveMesagge();

@@ -2,6 +2,9 @@ package communication;
 import java.io.*; 
 import java.net.*;
 import java.util.*;
+
+import usermanager.UserManager;
+
 import cl.puc.dds.appmgr.external.ICommunicationMgr;
 
 public class Communication implements Runnable, ICommunicationMgr
@@ -10,26 +13,17 @@ public class Communication implements Runnable, ICommunicationMgr
 	private ArrayList<Integer> nodos;
 	private ServerSocket welcomeSocket;
 	private boolean envioDeObjeto = false; 
-	private static Communication cm;
 	
-	public static Communication getInstance() {
-        if (cm == null) {
-            try {
-				cm = new Communication();
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-        }
-        return cm;
-    }
+	
+	
 
-	public Communication() throws Exception
+	public Communication(int id) throws Exception
 	{
 		nodos = new ArrayList<Integer>();
-		this.id = UserManager.getInstance().getCurrentUser().getId();	
-		welcomeSocket = new ServerSocket(id);
+		this.id = id;	
+		welcomeSocket = new ServerSocket(this.id);
 	}
+		
 
 	//Metodo que retorna true si logra conectarse a la red y false si no es posible
 	public boolean connectToSession() throws Exception

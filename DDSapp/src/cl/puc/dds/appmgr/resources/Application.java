@@ -1,7 +1,14 @@
 package cl.puc.dds.appmgr.resources;
 
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+
+import IIC2113.resource.manager.ResourceManager;
+
+import usermanager.ResourceState;
+import usermanager.UserManager;
 
 import communication.Communication;
 
@@ -10,7 +17,7 @@ import cl.puc.dds.appmgr.external.ICommunicationMgr;
 import cl.puc.dds.appmgr.external.IPersistenceMgr;
 import cl.puc.dds.appmgr.external.IResource;
 import cl.puc.dds.appmgr.external.IResourceMgr;
-import cl.puc.dds.appmgr.external.IUserMgr;
+
 
 /**
  * @author Maquina
@@ -25,34 +32,48 @@ public abstract class Application{
 	DeviceState state; /*Contiene el dispositivo LOCAL donde corre esta app*/
 	ArrayList<IResource> resources = new ArrayList<IResource>(); /*Lista de dispositivos locales*/
 
-	
-	
+
+
 	// Acceso a los managers externos, Ojo: igual son los de ESTE dispotivo.
-	
-	
-	
-	ICommunicationMgr communicationMgr;
+
+
+
+	Communication communicationMgr;
 	IPersistenceMgr persistenceMgr;
-	IResourceMgr resourceMgr;
-	IUserMgr userMgr;
+	ResourceManager resourceMgr;
+
+	UserManager userMgr;
 
 	ApplicationDaemon deamon; /*Thread que corre métodos de rutina (persistencia, revisar dispositivos que se caen, etc.)*/
 
 	public Application() 
 	{
-		
-		
-		 try {
-			 
-			communicationMgr = Communication.getInstance();
+
+
+		try {
+
+			SecureRandom random = new SecureRandom();    	
+		    int userid = random.nextInt(20)+6000;
+			
+			resourceMgr = new ResourceManager();
+			resourceMgr.setAppObserver(this.listener);
+			
+			communicationMgr = new Communication(userid);
+			new Thread(communicationMgr).start();
+			
+			userMgr = UserManager.init(communicationMgr, userid);
+			
+
+
+
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}	
 	}
-	
+
 	// Lista con recursos de otros dispotivos.
-	ArrayList<IResource> foreignResources = new ArrayList<IResource>();
+	List<ResourceState> foreignResources = new ArrayList<ResourceState>();
 
 
 	// Lista de dispositivos actualmente conectados a la "red" de la aplicación
@@ -65,8 +86,9 @@ public abstract class Application{
 	 * Devuelve la lista con referencias 
 	 * @return ArrayList con todos los recursos
 	 */
-	public ArrayList<IResource> getAllForeignResources(){
-		return foreignResources;		
+	public ArrayList<ResourceState> getAllForeignResources(){
+		setForeignResources();
+		return (ArrayList<ResourceState>)foreignResources;		
 	}
 
 
@@ -80,10 +102,10 @@ public abstract class Application{
 	}
 
 
-	public boolean userResource(IResource r){
+	public boolean userResource(ResourceState r){
 
 		String id = state.getDevice().getId();
-		
+
 		Object amm = new AMMessage(id, "CONSUME" , r); 
 		// CONSUME indica que se va a pedir "usar" el recurso. Aquí podrían ir otros parámetros
 		// dependiendo del recurso. Ejemplo "burdo": Consumir foto en baja resolución. "CONSUME_LOWRES".
@@ -92,7 +114,7 @@ public abstract class Application{
 		// por ahora asumimos exception:
 
 		try{
-			this.communicationMgr.sendObject(amm , r.getOwnerId());
+			this.communicationMgr.sendObject(amm , r.getUserId());
 			return true;
 		}catch(Exception e){
 			return false;
@@ -100,10 +122,10 @@ public abstract class Application{
 
 
 	}
-	
-	
+
+
 	public HashMap<IResource, Object> resourcesFlags = new HashMap<IResource, Object>();
-	
+
 	public HashMap<IResource, Object> getResourcesFlags() {
 		return resourcesFlags;
 	}
@@ -115,27 +137,27 @@ public abstract class Application{
 
 
 	public Object recieveMesagge(AMMessage amm){
-		
-		
+
+
 		if(amm.action.equals("CONSUME")){
-			
+
 			IResource r = (IResource) amm.pack;
-			
+
 			// En este ejemplo sacaremos una foto
 			resourceMgr.resourceAction(r.getId(), 0, null);
-			
+
 			if(!resourcesFlags.containsKey(r)){
 				resourcesFlags.put(r, null);
 			}
-			
+
 			Object respond = resourcesFlags.get(r);
-			
+
 			while(respond == null){				
 			}
-			
+
 			return respond;			
 		}
-		
+
 		return null;
 	}
 
@@ -144,7 +166,7 @@ public abstract class Application{
 		return communicationMgr;
 	}
 
-	public void setCommunicationMgr(ICommunicationMgr communicationMgr) {
+	public void setCommunicationMgr(Communication communicationMgr) {
 		this.communicationMgr = communicationMgr;
 	}
 
@@ -156,7 +178,7 @@ public abstract class Application{
 		this.persistenceMgr = persistenceMgr;
 	}
 
-	public void setResourceMgr(IResourceMgr resourceMgr) {
+	public void setResourceMgr(ResourceManager resourceMgr) {
 		this.resourceMgr = resourceMgr;
 	}
 
@@ -208,7 +230,7 @@ public abstract class Application{
 	public ArrayList<IResource> getResources() {
 		return resources;
 	}
-	public IResourceMgr getResourceMgr() {
+	public ResourceManager getResourceMgr() {
 		return resourceMgr;
 	}	
 	public ApplicationListener getApplicationListener(){

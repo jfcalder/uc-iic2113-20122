@@ -14,7 +14,11 @@ public class User implements Serializable {
     private String password = null;
     private List<ResourceState> resources;
 
-    /**
+    public void setResources(List<ResourceState> resources) {
+		this.resources = resources;
+	}
+
+	/**
      * Constructor for user, receives the username and password.
      * 
      * @param username
@@ -22,14 +26,13 @@ public class User implements Serializable {
      * @param password
      *            password of the user.
      */
-    public User() {
+    public User(int id) {
         // this.username = username;
         // this.password = new SHA1().getHash(password);
-    	do{
-        SecureRandom random = new SecureRandom();
-        this.id = random.nextInt();
-    	}
-        while(this.id>=6000&&this.id<=6020);
+    	
+       
+    	this.id = id;
+        
         //this.devices = new ArrayList<Device>();
         this.resources = new ArrayList<ResourceState>();
     }

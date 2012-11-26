@@ -3,11 +3,13 @@ package cl.puc.dds.appmgr.resources;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import IIC2113.resource.manager.IAppObs;
+
 import cl.puc.dds.appmgr.external.IApplication;
 import cl.puc.dds.appmgr.external.IDevice;
 import cl.puc.dds.appmgr.external.IResource;
 
-public class ApplicationListener{
+public class ApplicationListener implements IAppObs{
 	
 	IApplication app;
 	
