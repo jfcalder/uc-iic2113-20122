@@ -12,12 +12,12 @@ import org.junit.Test;
 import qrComponent.QRCode;
 import qrComponent.QRObserver;
 import qrComponent.QRReader;
-import qrComponent.Resource;
+import qrComponent.IResource;
 
 
 public class QRReaderTest {
 
-	private Resource qr;
+	private IResource qr;
 	private QRObserver observer;
 	private byte[] data;
 
