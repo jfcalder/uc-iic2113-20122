@@ -16,10 +16,6 @@ import cl.puc.dds.appmgr.external.IUserMgr;
  */
 public abstract class Application{
 
-
-	// cambio random
-	
-
 	String appID; /*Permite reconocer la misma aplicación en diferentes dispositivos. Ejemplo: Angry birds siempre tendrá id "AngryBirds01" */
 	String version; 
 
@@ -35,6 +31,8 @@ public abstract class Application{
 
 	ApplicationDaemon deamon; /*Thread que corre métodos de rutina (persistencia, revisar dispositivos que se caen, etc.)*/
 
+	
+	
 	// Lista con recursos de otros dispotivos.
 	ArrayList<IResource> foreignResources = new ArrayList<IResource>();
 

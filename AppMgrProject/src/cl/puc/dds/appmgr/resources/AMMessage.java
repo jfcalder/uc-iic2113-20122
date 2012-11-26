@@ -8,8 +8,7 @@ public class AMMessage implements Serializable{
 	public String action;
 	public Object pack;
 	
-	/**
-	 * 
+	/** 
 	 * @param id sender id
 	 * @param action datos de la acción a realizar 
 	 * @param obj puede ser, por ejemplo, un resource.
