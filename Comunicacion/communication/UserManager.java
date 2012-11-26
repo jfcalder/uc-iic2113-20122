@@ -1,5 +1,7 @@
 package communication;
 
+
+
 public class UserManager {
 
 	public UserManager getCurrentUser() {
