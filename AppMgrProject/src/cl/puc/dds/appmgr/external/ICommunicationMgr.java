@@ -9,3 +9,4 @@ public interface ICommunicationMgr{
 	void sendObject(Object o , int reciever_id) throws Exception;
 
 }
+
