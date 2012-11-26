@@ -48,7 +48,9 @@ public class QRReaderTest {
 
 	@Test
 	public void readTextText() {
-		data = convertImageToByte("/home/santiago/Aptana Studio 3/Aptana Workspace/QRReader/CodigosQR/TextQR.png");
+		File relative = new File("CodigosQR/TextQR.png");
+		String path = relative.getAbsolutePath();
+		data = convertImageToByte(path);
 		qr.reciveAction(data, 0);
 		QRCode code = (QRCode)observer.getQRCode();
 		assertEquals("IIC - Diseño Detallado de Software", code.getText());
@@ -56,7 +58,9 @@ public class QRReaderTest {
 	
 	@Test
 	public void readTextType() {
-		data = convertImageToByte("/home/santiago/Aptana Studio 3/Aptana Workspace/QRReader/CodigosQR/TextQR.png");
+		File relative = new File("CodigosQR/TextQR.png");
+		String path = relative.getAbsolutePath();
+		data = convertImageToByte(path);
 		qr.reciveAction(data, 0);
 		QRCode code = (QRCode)observer.getQRCode();
 		assertEquals("TEXT", code.getType());
@@ -64,7 +68,9 @@ public class QRReaderTest {
 	
 	@Test
 	public void readSMSText() {
-		data = convertImageToByte("/home/santiago/Aptana Studio 3/Aptana Workspace/QRReader/CodigosQR/SMSQR.png");
+		File relative = new File("CodigosQR/SMSQR.png");
+		String path = relative.getAbsolutePath();
+		data = convertImageToByte(path);
 		qr.reciveAction(data, 0);
 		QRCode code = (QRCode)observer.getQRCode();
 		assertEquals("SMSTO:+56988338752:A José Francisco le gusta programar.", code.getText());
@@ -72,7 +78,9 @@ public class QRReaderTest {
 	
 	@Test
 	public void readSMSType() {
-		data = convertImageToByte("/home/santiago/Aptana Studio 3/Aptana Workspace/QRReader/CodigosQR/SMSQR.png");
+		File relative = new File("CodigosQR/SMSQR.png");
+		String path = relative.getAbsolutePath();
+		data = convertImageToByte(path);
 		qr.reciveAction(data, 0);
 		QRCode code = (QRCode)observer.getQRCode();
 		assertEquals("SMS", code.getType());
@@ -80,7 +88,9 @@ public class QRReaderTest {
 
 	@Test
 	public void readPhoneNumberText() {
-		data = convertImageToByte("/home/santiago/Aptana Studio 3/Aptana Workspace/QRReader/CodigosQR/PhoneNumberQR.png");
+		File relative = new File("CodigosQR/PhoneNumberQR.png");
+		String path = relative.getAbsolutePath();
+		data = convertImageToByte(path);
 		qr.reciveAction(data, 0);
 		QRCode code = (QRCode)observer.getQRCode();
 		assertEquals("TEL:", code.getText());
@@ -88,7 +98,9 @@ public class QRReaderTest {
 	
 	@Test
 	public void readPhoneNumberType() {
-		data = convertImageToByte("/home/santiago/Aptana Studio 3/Aptana Workspace/QRReader/CodigosQR/PhoneNumberQR.png");
+		File relative = new File("CodigosQR/PhoneNumberQR.png");
+		String path = relative.getAbsolutePath();
+		data = convertImageToByte(path);
 		qr.reciveAction(data, 0);
 		QRCode code = (QRCode)observer.getQRCode();
 		assertEquals("TEL", code.getType());
@@ -96,7 +108,9 @@ public class QRReaderTest {
 	
 	@Test
 	public void readWebText() {
-		data = convertImageToByte("/home/santiago/Aptana Studio 3/Aptana Workspace/QRReader/CodigosQR/WebQR.png");
+		File relative = new File("CodigosQR/WebQR.png");
+		String path = relative.getAbsolutePath();
+		data = convertImageToByte(path);
 		qr.reciveAction(data, 0);
 		QRCode code = (QRCode)observer.getQRCode();
 		assertEquals("http://www.uc.cl", code.getText());
@@ -104,7 +118,9 @@ public class QRReaderTest {
 	
 	@Test
 	public void readWebType() {
-		data = convertImageToByte("/home/santiago/Aptana Studio 3/Aptana Workspace/QRReader/CodigosQR/WebQR.png");
+		File relative = new File("CodigosQR/WebQR.png");
+		String path = relative.getAbsolutePath();
+		data = convertImageToByte(path);
 		qr.reciveAction(data, 0);
 		QRCode code = (QRCode)observer.getQRCode();
 		assertEquals("URI", code.getType());
@@ -112,7 +128,9 @@ public class QRReaderTest {
 	
 	@Test (expected = NullPointerException.class)
 	public void readNonQRCode() {
-		data = convertImageToByte("/home/santiago/Aptana Studio 3/Aptana Workspace/QRReader/CodigosQR/PUCIcon.png");
+		File relative = new File("CodigosQR/PUCIcon.png");
+		String path = relative.getAbsolutePath();
+		data = convertImageToByte(path);
 		qr.reciveAction(data, 0);
 		QRCode code = (QRCode)observer.getQRCode();
 		code.getText();

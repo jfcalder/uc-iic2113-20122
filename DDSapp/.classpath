@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="src" path="gen"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
+<<<<<<< HEAD
+	<classpathentry combineaccessrules="false" kind="src" path="/cl.puc.dds.appmgr.DDSAppMgrActivity"/>
+=======
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="gen"/>
+>>>>>>> branch 'master' of https://github.com/jfcalder/uc-iic2113-20122.git
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
