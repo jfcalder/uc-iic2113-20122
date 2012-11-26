@@ -6,6 +6,6 @@ public interface ICommunicationMgr{
 	
 	ArrayList<Object> requestDevicesOnline();
 	boolean isDeviceOnline(String id);	
-	void sendObject(Object o , int reciever_id) throws Exception;
+	void sendObject(Object o , int reciever_id);
 
 }
