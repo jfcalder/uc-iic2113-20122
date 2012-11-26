@@ -2,16 +2,13 @@ package communication;
 import java.io.*; 
 import java.net.*;
 import java.util.*;
+import cl.puc.dds.appmgr.external.ICommunicationMgr;
 
-import javax.swing.Icon;
-
-
-public class Communication implements Runnable
+public class Communication implements Runnable, ICommunicationMgr
 {
 	private int id;
 	private ArrayList<Integer> nodos;
 	private ServerSocket welcomeSocket;
-	//private Object objetoRecibido;
 	private boolean envioDeObjeto = false; 
 
 	public Communication(int id) throws Exception
@@ -282,4 +279,14 @@ public class Communication implements Runnable
 		return objetoRecibido;
 	}
 	*/
+
+	@Override
+	public ArrayList<Object> requestDevicesOnline() {
+		return null;
+	}
+
+	@Override
+	public boolean isDeviceOnline(String id) {
+		return false;
+	}
 }

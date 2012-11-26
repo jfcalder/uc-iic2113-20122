@@ -61,7 +61,10 @@ public class QRReader implements Resource{
         while(it.hasNext())
         {
         	QRObserver o = (QRObserver)it.next();
-        	o.update(code);
+        	if (code != null)
+        		o.consumptionFinished(this.id,code);
+        	else
+        		o.consumptionFailed(this.id, "Error in QR Reader");
         }
     }
 
