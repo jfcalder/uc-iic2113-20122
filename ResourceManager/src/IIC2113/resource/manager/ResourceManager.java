@@ -24,6 +24,11 @@ public class ResourceManager implements IConsumptionObs{
 		this.device_id = _device_id;
 	}
 	
+	/*
+	 * Este es el último método que falta implementar. Hay que hacer que en vez de instancear
+	 * recursos de mentira, se instancien los recursos reales. Para eso se necesita tener acceso a las
+	 * clases de los recursos.
+	 * */
 	public void init()
 	{
 		this.user_id = 1;
