@@ -3,6 +3,8 @@ package cl.puc.dds.appmgr.resources;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import communication.Communication;
+
 import cl.puc.dds.appmgr.external.IApplication;
 import cl.puc.dds.appmgr.external.ICommunicationMgr;
 import cl.puc.dds.appmgr.external.IPersistenceMgr;
@@ -24,7 +26,8 @@ public abstract class Application{
 	ArrayList<IResource> resources = new ArrayList<IResource>(); /*Lista de dispositivos locales*/
 
 	// Acceso a los managers externos, Ojo: igual son los de ESTE dispotivo.
-	ICommunicationMgr communicationMgr;	
+	ICommunicationMgr communicationMgr = new Communication(Integer.parseInt(state.getDevice().getId()));	
+	
 	IPersistenceMgr persistenceMgr;
 	IResourceMgr resourceMgr;
 	IUserMgr userMgr;

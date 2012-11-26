@@ -20,7 +20,7 @@ import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
 import com.google.zxing.client.result.ResultParser;
 import com.google.zxing.common.HybridBinarizer;
 
-public class QRReader implements Resource{
+public class QRReader implements IResource{
 
 	private int id;
 	List<IConsuptionObs> observers = new ArrayList<IConsuptionObs>();
