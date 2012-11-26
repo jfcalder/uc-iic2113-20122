@@ -1,5 +1,7 @@
 package com.example.ddsapp;
 
+import cl.puc.dds.appmgr.external.IResource;
+import IIC2113.resource.manager.IConsumptionObs;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -112,4 +114,31 @@ public class ResourceConnector implements IResource
 		Log.v(":","Notifico");
 	}
 
+
+	public String getType() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	public boolean recieveAction(int action_id, String[] param) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+
+	public int getOwnerId() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+
+	public int getId() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+
 }
+
+

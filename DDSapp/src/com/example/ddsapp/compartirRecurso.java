@@ -3,6 +3,8 @@ package com.example.ddsapp;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import cl.puc.dds.appmgr.external.IResource;
+
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
