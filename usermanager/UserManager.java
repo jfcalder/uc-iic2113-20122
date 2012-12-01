@@ -6,17 +6,20 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import usermanager.model.Device;
-import usermanager.model.ResourceState;
-import usermanager.model.Sesion;
-import usermanager.model.User;
-import usermanager.util.Encoder;
-import usermanager.util.Status;
+import IIC2113.resource.manager.IUserManager;
+import IIC2113.resource.manager.ResourceManager;
+
+import usermanager.Device;
+import usermanager.ResourceState;
+import usermanager.Sesion;
+import usermanager.User;
+import usermanager.Encoder;
+import usermanager.Status;
 
 import communication.Communication;
 import communication.UMMessage;
 
-public class UserManager implements IUserManager, Serializable {
+public class UserManager implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -24,14 +27,34 @@ public class UserManager implements IUserManager, Serializable {
 	private Sesion currentSesion = null;
 
 	private User currentUser;
-	private Device currentDevice;	
-	
+	private Device currentDevice;
+
+	private Communication communication;
+	public static ResourceManager rmanager = null;
+
+	public Communication getCommunication() {
+		return communication;
+	}
+
+	public void setCommunication(Communication communication) {
+		this.communication = communication;
+	}
 
 	private static UserManager um;
 
 	public static UserManager getInstance() {
-		if (um == null) {
-			um = new UserManager();
+		return um;
+	}
+
+	public static UserManager init(Communication com, ResourceManager rm, int id) {
+
+		if (rmanager == null) {
+			rmanager = rm;
+
+			if (um == null) {
+				um = new UserManager(com, id);
+			}
+
 		}
 		return um;
 	}
@@ -42,25 +65,39 @@ public class UserManager implements IUserManager, Serializable {
 	 * Constructor of user manager, inititalizes the list of sesions and sets
 	 * default status (disconnected).
 	 */
-	private UserManager() {
+	private UserManager(Communication com, int id) {
+		System.out.println("Iniciando UserManager con el id " + id);
 		sesions = new ArrayList<Sesion>();
 		STATUS = Status.DISCONNECTED;
 
-		currentUser = new User();
+		currentUser = new User(id);
+
+		communication = com;
 
 		try {
-			if (!Communication.getInstance().connectToSession()) {
+			if (!this.communication.connectToSession()) {
 				// Soy el primero en conectarme por lo que tengo que crear la
 				// session
+				System.out
+						.println("Soy el primero en conectarme por lo que tengo que crear la session");
 				joinSesion(new Sesion());
 				sesions.add(currentSesion);
 				currentSesion.getUsersList().add(currentUser);
 			} else {
 				// Envio un mensaje al primer usario de la sesion para que me
 				// devuelva la sesion
-				int first = Communication.getInstance().getNodos().get(0);
-				UMMessage message = new UMMessage(this, "get_session", null);
-				Communication.getInstance().sendObject(message, first);
+				System.out
+						.println("Envio un mensaje al primer usuario de la sesion para que me devuelva la sesion");
+				while (this.communication.getNodos().size() < 1) {
+					Thread.currentThread().sleep(500);
+				}
+				System.out.println("numero de nodos: "
+						+ this.communication.getNodos().size());
+				int first = this.communication.getNodos().get(0);
+				System.out.println("First: "+first);
+				UMMessage message = new UMMessage(this.currentUser.getId(),
+						"get_session", null);
+				this.communication.sendObject(message, first);
 			}
 
 		} catch (Exception e) {
@@ -69,31 +106,43 @@ public class UserManager implements IUserManager, Serializable {
 		}
 
 	}
-
+	/**
+	 * Recieve message send through communication.
+	 * 
+	 * @param message
+	 *            message recieved.
+	 */
 	public void recieveMessage(UMMessage message) {
 		int sender = message.sender_id;
-		if (message.action == "get_session") {
-			UMMessage response = new UMMessage(this, "set_session",
+		System.out.println("Recibo del usuario "+sender+" un "+message.action);
+		if (message.action.equals("get_session")) {
+			System.out.println("Get session!!");
+			UMMessage response = new UMMessage(this.currentUser.getId(), "set_session",
 					getCurrentSesion());
 			try {
-				Communication.getInstance().sendObject(response, sender);
+				this.communication.sendObject(response, sender);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		} else if (message.action == "set_session") {
+		} else if (message.action.equals("set_session")) {
 			joinSesion((Sesion) message.pack);
 			currentSesion.getUsersList().add(currentUser);
 			sesions.add(currentSesion);
 			// Notificar al resto la incorporacion a la sesion
-			UMMessage mess = new UMMessage(this, "add_user", currentUser);
-			Communication.getInstance().sendToAll(mess);
-		} else if (message.action == "add_user") {
+			UMMessage mess = new UMMessage(this.currentUser.getId(), "add_user", currentUser);
+			try {
+				this.communication.sendToAll(mess);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		} else if (message.action.equals("add_user")) {
 			currentSesion.getUsersList().add((User) message.pack);
-		} else if (message.action == "remove_user") {
+		} else if (message.action.equals("remove_user")) {
 			currentSesion.getUsersList().remove((User) message.pack);
 		}		
-		else if( message.action == "update_state"){
+		else if( message.action.equals( "update_state")){
 			int[] new_state = (int[]) message.pack;
 			this.updateState(new_state[0], new_state[1]);			
 		}
@@ -163,8 +212,20 @@ public class UserManager implements IUserManager, Serializable {
 	public void joinSesion(Sesion sesion) {
 		this.currentSesion = sesion;
 		STATUS = Status.CONNECTED;
-		
-		//Falta metodo de agregar lista de recursos de ResourceManager (Setear ID recursos y usuario)
+
+		String[] user_resrouces = rmanager.getResourcesList();
+		List<ResourceState> lista_recursos = new ArrayList<ResourceState>();
+		for (int j = 0; j < user_resrouces.length; j++) {
+			// agregar los recursos al usuario
+			ResourceState r1 = new ResourceState();
+			r1.setId(this.currentSesion.getNextResourceId());
+			r1.setUserId(currentUser.getId());
+			r1.setType(user_resrouces[j]);
+			lista_recursos.add(r1);
+		}
+
+		currentUser.setResources(lista_recursos);
+
 	}
 
 	/**
@@ -174,12 +235,18 @@ public class UserManager implements IUserManager, Serializable {
 	 *            sesion to leave.
 	 */
 	public void leaveSesion(Sesion sesion) {
-        this.currentSesion = null;
-        STATUS = Status.DISCONNECTED;
+		this.currentSesion = null;
+		STATUS = Status.DISCONNECTED;
 
-        UMMessage mess = new UMMessage(this, "remove_user", currentUser);
-        Communication.getInstance().sendToAll(mess);
-    }
+		UMMessage mess = new UMMessage(this.currentUser.getId(), "remove_user",
+				currentUser);
+		try {
+			this.communication.sendToAll(mess);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 
 	/**
 	 * Disconnects the device.
@@ -249,7 +316,7 @@ public class UserManager implements IUserManager, Serializable {
 	}
 
 	// actualizar estado recurso
-	
+
 	private void updateState(int resource_id, int state) {
 
 		for (User usr : currentSesion.getUsersList()) {
@@ -270,16 +337,22 @@ public class UserManager implements IUserManager, Serializable {
 	public void consumptionFinished(int resource_id, String path) {
 		// Dejar recurso como inactivo en la lista
 		updateState(resource_id, 0);
-		//Avisar a todos
-		int[] state_data = { resource_id , 0  };		
-		UMMessage mess = new UMMessage(this, "update_state", state_data);
-		Communication.getInstance().sendToAll(mess);
+		// Avisar a todos
+		int[] state_data = { resource_id, 0 };
+		UMMessage mess = new UMMessage(this.currentUser.getId(),
+				"update_state", state_data);
+		try {
+			this.communication.sendToAll(mess);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 	}
 
 	public void consumptionFailed(int resource_id, String error) {
 		// informar error
-		
+
 	}
 
 	public void consumptionInterrupted(int resource_id, String error) {
@@ -288,37 +361,33 @@ public class UserManager implements IUserManager, Serializable {
 
 	public void consumptionStarted(int resource_id, String[] details) {
 		updateState(resource_id, 1);
-		int[] state_data = { resource_id , 1  };		
-		UMMessage mess = new UMMessage(this, "update_state", state_data);
-		Communication.getInstance().sendToAll(mess);
+		int[] state_data = { resource_id, 1 };
+		UMMessage mess = new UMMessage(this.currentUser.getId(),
+				"update_state", state_data);
+		try {
+			this.communication.sendToAll(mess);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
-	public Sesion getCurrentSession() {
-		// TODO Auto-generated method stub
-		return null;
+	public List<ResourceState> getResourceList() {
+		List<ResourceState> lista_recursos = new ArrayList<ResourceState>();
+		if (currentSesion != null) {
+			for (User usr : currentSesion.getUsersList()) {
+				for (ResourceState rsrc : usr.getResources()) {
+					if (rsrc.getStatus() == 0)
+						lista_recursos.add(rsrc);
+				}
+			}
+		}
+		return lista_recursos;
+
 	}
 
-	public void disconnectUser(int user_id) {
-		// TODO Auto-generated method stub
-
+	public void setResrouceManager(ResourceManager rsrc_mg) {
+		this.rmanager = rsrc_mg;
 	}
-
-	public void updateUser(User updatedUser) {
-		// TODO Auto-generated method stub
-
-	}
-
-
-	public List<ResourceState> getResourceList(){    
-		List<ResourceState> lista_recursos = new ArrayList<ResourceState>();    
-		for( User usr : currentSesion.getUsersList()){        
-			for( ResourceState rsrc : usr.getResources()){        
-				if(rsrc.getStatus() == 0)
-					lista_recursos.add(rsrc);       
-				}      
-		}    
-    return lista_recursos;   
-  
-  }
 
 }
